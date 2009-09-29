@@ -26,7 +26,6 @@
 				 title:(NSString*)title
 		   description:(NSString*)desc;
 
-
 - (void)notifyWithType:(NSString*)type
 				 title:(NSString*)title
 		   description:(NSString*)desc

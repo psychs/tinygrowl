@@ -11,6 +11,9 @@
 	NSArray* allNotifications;
 	NSArray* defaultNotifications;
 	NSImage* appIcon;
+	
+	NSString* clickedNotificationName;
+	NSString* timedOutNotificationName;
 	NSTimeInterval lastCallbackTime;
 }
 

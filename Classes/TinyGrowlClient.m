@@ -3,14 +3,14 @@
 
 #import "TinyGrowlClient.h"
 
-#define GROWL_REGISTER					@"GrowlApplicationRegistrationNotification"
-#define GROWL_NOTIFICATION				@"GrowlNotification"
-#define GROWL_IS_READY					@"Lend Me Some Sugar; I Am Your Neighbor!"
-#define GROWL_NOTIFICATION_CLICKED		@"GrowlClicked!"
-#define GROWL_NOTIFICATION_TIMED_OUT	@"GrowlTimedOut!"
-#define GROWL_CONTEXT_KEY				@"ClickedContext"
+#define GROWL_REGISTER			@"GrowlApplicationRegistrationNotification"
+#define GROWL_NOTIFICATION		@"GrowlNotification"
+#define GROWL_IS_READY			@"Lend Me Some Sugar; I Am Your Neighbor!"
+#define GROWL_CLICKED			@"GrowlClicked!"
+#define GROWL_TIMED_OUT			@"GrowlTimedOut!"
+#define GROWL_CONTEXT_KEY		@"ClickedContext"
 
-#define CALLBACK_TIME_EPSILON			0.05
+#define CALLBACK_TIME_EPSILON	0.05
 
 
 @implementation TinyGrowlClient
@@ -30,10 +30,16 @@
 
 - (void)dealloc
 {
+	NSDistributedNotificationCenter* dnc = [NSDistributedNotificationCenter defaultCenter];
+	[dnc removeObserver:self name:GROWL_IS_READY object:nil];
+	[dnc removeObserver:self name:clickedNotificationName object:nil];
+	[dnc removeObserver:self name:timedOutNotificationName object:nil];
 	[appName release];
 	[allNotifications release];
 	[defaultNotifications release];
 	[appIcon release];
+	[clickedNotificationName release];
+	[timedOutNotificationName release];
 	[super dealloc];
 }
 
@@ -101,19 +107,23 @@
 	if (!appName) {
 		self.appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 	}
+	
 	if (!defaultNotifications) {
 		self.defaultNotifications = allNotifications;
 	}
 	
 	int pid = [[NSProcessInfo processInfo] processIdentifier];
 	
-	NSString* clickedName = [NSString stringWithFormat:@"%@-%d-%@", appName, pid, GROWL_NOTIFICATION_CLICKED];
-	NSString* timedOutName = [NSString stringWithFormat:@"%@-%d-%@", appName, pid, GROWL_NOTIFICATION_TIMED_OUT];
+	[clickedNotificationName release];
+	[timedOutNotificationName release];
+	
+	clickedNotificationName = [[NSString stringWithFormat:@"%@-%d-%@", appName, pid, GROWL_CLICKED] retain];
+	timedOutNotificationName = [[NSString stringWithFormat:@"%@-%d-%@", appName, pid, GROWL_TIMED_OUT] retain];
 	
 	NSDistributedNotificationCenter* dnc = [NSDistributedNotificationCenter defaultCenter];
 	[dnc addObserver:self selector:@selector(onReady:) name:GROWL_IS_READY object:nil];
-	[dnc addObserver:self selector:@selector(onClicked:) name:clickedName object:nil];
-	[dnc addObserver:self selector:@selector(onTimeout:) name:timedOutName object:nil];
+	[dnc addObserver:self selector:@selector(onClicked:) name:clickedNotificationName object:nil];
+	[dnc addObserver:self selector:@selector(onTimeout:) name:timedOutNotificationName object:nil];
 	
 	NSImage* icon = appIcon ?: [NSApp applicationIconImage];
 	

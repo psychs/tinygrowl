@@ -48,7 +48,7 @@
 @end
 
 
-@interface NSObject (TinyGrowlClient)
+@interface NSObject (TinyGrowlClientDelegate)
 - (void)tinyGrowlClient:(TinyGrowlClient*)sender didClick:(id)context;
 - (void)tinyGrowlClient:(TinyGrowlClient*)sender didTimeOut:(id)context;
 @end

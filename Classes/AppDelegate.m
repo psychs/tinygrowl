@@ -31,7 +31,7 @@
 {
 	id context = @"test info context";
 	
-	[growl notifyWithType:ALERT_NOTIFICATION_NAME
+	[growl notifyWithType:INFO_NOTIFICATION_NAME
 					title:@"Info title"
 			  description:@"Info description"
 			 clickContext:context];

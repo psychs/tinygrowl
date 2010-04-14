@@ -75,8 +75,6 @@
 			  priority:(int)priority
 				  icon:(NSImage*)icon
 {
-	[self registerApplication];
-	
 	NSMutableDictionary* dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 								appName, @"ApplicationName",
 								[NSNumber numberWithInt:[[NSProcessInfo processInfo] processIdentifier]], @"ApplicationPID",

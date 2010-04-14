@@ -22,6 +22,7 @@
 	growl = [TinyGrowlClient new];
 	growl.delegate = self;
 	growl.allNotifications = [NSArray arrayWithObjects:ALERT_NOTIFICATION_NAME, INFO_NOTIFICATION_NAME, nil];
+	[growl registerApplication];
 	
 	[window center];
 	[window makeKeyAndOrderFront:self];
